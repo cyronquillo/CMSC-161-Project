@@ -152,7 +152,9 @@
 			var geometry = new THREE.TorusKnotGeometry( 10, 3, 100, 35 );
 			var material;
 			if (!is_silhouette){
-				material = new THREE.MeshPhongMaterial( { color: 0x00ff00 } );				}
+				var texture = new THREE.TextureLoader().load("abstract_texture.jpg");
+				material = new THREE.MeshPhongMaterial( {map:texture} );				
+			}
 			else material = new THREE.MeshBasicMaterial( { color: 0xff0000  } );
 			material.side = THREE.DoubleSide;
 			var torusKnot = new THREE.Mesh( geometry, material );
@@ -178,7 +180,10 @@
 		/*DRAW HALF RING*/
 		function half_ring (is_silhouette,scene){
 			var geometry = new THREE.RingGeometry( 18.7, 10, 8, 16, 4, 3.2 );
-			if (!is_silhouette) var material = new THREE.MeshBasicMaterial( { color: 0x11bbee, side: THREE.DoubleSide } );
+			if (!is_silhouette){
+				var texture = new THREE.TextureLoader().load("abstract_texture2.jpg");
+				var material = new THREE.MeshBasicMaterial( { map:texture, side: THREE.DoubleSide } );
+			}
 			else var material = new THREE.MeshBasicMaterial( { color: 0xff0000  } );
 
 			var mesh = new THREE.Mesh( geometry, material );
@@ -641,7 +646,7 @@
 			sillScene.remove(sillScene.children[0]); //clear canvas
 			var spotLight = new THREE.SpotLight(0xffffff)
 			spotLight.position.set(-0, 30, 60)
-			spotLight.intensity = 0.6
+			spotLight.intensity = 1
 			scene.add(spotLight)
 
 			if(count==2){					
