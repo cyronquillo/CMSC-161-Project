@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css?family=Bungee+Shade|Rubik:400,900');
+#title {
+    font-family: 'Bungee Shade', sans-serif;
+    color: white;
+    position: fixed;
+    margin-top: 1em;
+    font-size: 10em;
+    text-align: center;
+    width: 100%;
+    -webkit-touch-callout: none; /* iOS Safari */
+      -webkit-user-select: none; /* Safari */
+       -khtml-user-select: none; /* Konqueror HTML */
+         -moz-user-select: none; /* Firefox */
+          -ms-user-select: none; /* Internet Explorer/Edge */
+              user-select: none; /* Non-prefixed version, currently
+                                    supported by Chrome and Opera */
+}
+#options {
+    position: fixed;
+    color: white;
+    top: 22em;
+    padding-left: 20em;
+}
+
+.menu.button {
+    font-family: 'Rubik', sans-serif;
+    font-size: 3em;
+    padding-bottom: 1em;
+    -webkit-touch-callout: none; /* iOS Safari */
+      -webkit-user-select: none; /* Safari */
+       -khtml-user-select: none; /* Konqueror HTML */
+         -moz-user-select: none; /* Firefox */
+          -ms-user-select: none; /* Internet Explorer/Edge */
+              user-select: none; /* Non-prefixed version, currently
+                    supported by Chrome and Opera */
+}
+
+.menu.button a {
+    color: white;
+}
+
+.menu.button a:hover {
+    color: #805fff;
+}
