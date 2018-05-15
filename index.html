@@ -11,7 +11,8 @@
 	</head>
 	<body>
         <!-- CDN Link to Three.js -->
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/87/three.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/87/three.js"></script>
+        <script src='./ParametricGeometry.js'></script>
         <!--reference your JS file here. Mine looks like below-->
         <script>
             
@@ -75,7 +76,7 @@
 
                 if (is_silhouette)
                 {
-                    torusKnot.rotation.z = 0.4;
+                    torusKnot.rotation.z = 0.0;
                     torusKnot.rotation.x = 2.5;
                     torusKnot.rotation.y = 2.0;
                 }
@@ -101,10 +102,75 @@
                 return new THREE.Vector3(x, y, z);
             };
 
+            function half_ring (is_silhouette = false)
+            {
+                var geometry = new THREE.RingGeometry( 18.7, 10, 8, 16, 4, 3.2 );
+                if (!is_silhouette) var material = new THREE.MeshBasicMaterial( { color: 0x11bbee, side: THREE.DoubleSide } );
+                else var material = new THREE.MeshBasicMaterial( { color: 0x000000  } );
+
+                var mesh = new THREE.Mesh( geometry, material );
+                mesh.rotation.x = 1.5;
+                mesh.rotation.x = 3.5;
+                mesh.rotation.y = 1.0;
+                if (!is_silhouette)
+                {
+                    mesh.rotation.z = 0.0;
+                    mesh.rotation.x = 2.5;
+                    mesh.rotation.y = 1.0;
+                }
+                mesh.position.set(0,0,-25);
+                scene.add( mesh );
+            }
+            
+            function draw_heart (is_silhouette = false)
+            {
+                var x = 0, y = 0;
+
+                var heartShape = new THREE.Shape();
+
+                heartShape.moveTo( x + 5, y + 5 );
+                heartShape.bezierCurveTo( x + 5, y + 5, x + 4, y, x, y );
+                heartShape.bezierCurveTo( x - 6, y, x - 6, y + 7,x - 6, y + 7 );
+                heartShape.bezierCurveTo( x - 6, y + 11, x - 3, y + 15.4, x + 5, y + 19 );
+                heartShape.bezierCurveTo( x + 12, y + 15.4, x + 16, y + 11, x + 16, y + 7 );
+                heartShape.bezierCurveTo( x + 16, y + 7, x + 16, y, x + 10, y );
+                heartShape.bezierCurveTo( x + 7, y, x + 5, y + 5, x + 5, y + 5 );
+
+                var geometry = new THREE.ShapeBufferGeometry( heartShape );
+                if (!is_silhouette) var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+                else var material = new THREE.MeshBasicMaterial( { color: 0x000000  } );
+                
+                var mesh = new THREE.Mesh( geometry, material ) ;
+                mesh.rotation.z = 3.1;
+                if (is_silhouette)
+                {
+                    mesh.rotation.z = 0.0;
+                    mesh.rotation.x = 3.5;
+                    mesh.rotation.y = 4.5;
+                }
+                mesh.position.set(10,10,-30);                
+                scene.add( mesh );
+            }
+
+            function draw_klein (is_silhouette = false)
+            {
+                var geometry = new THREE.ParametricGeometry(THREE.ParametricGeometries.klein, 25, 25 );
+                if (!is_silhouette) var material = new THREE.MeshPhongMaterial( { color: 0x11bbee } );
+                else var material = new THREE.MeshBasicMaterial( { color: 0x000000  } );
+                material.side = THREE.DoubleSide;
+                var klein = new THREE.Mesh( geometry, material );
+                klein.position.set(3,0, -5);
+                klein.rotation.x = 5.0;
+                klein.rotation.y = 13.0;
+                klein.rotation.z = 0.0;
+                scene.add( klein );
+            }
+
+            
             const scene = new THREE.Scene()
             const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 )
             const renderer = new THREE.WebGLRenderer({ antialias: true})
-
+            
             renderer.setClearColor(new THREE.Color(0xeeeeee));
             
             camera.position.set(3, 0, 20);
@@ -117,16 +183,7 @@
 
             camera.position.z = 12;
 
-
-            var geometry = new THREE.ParametricGeometry( klein, 25, 25 );
-            var material = new THREE.MeshPhongMaterial( { color: 0x11bbee } );
-            material.side = THREE.DoubleSide;
-            var klein = new THREE.Mesh( geometry, material );
-            klein.position.set(3,0, -5);
-            klein.rotation.x = 5.0;
-            klein.rotation.y = 13.0;
-            klein.rotation.z = 4.5;
-            scene.add( klein );
+            draw_klein();
 
             renderer.setSize( window.innerWidth, window.innerHeight )
             document.body.appendChild( renderer.domElement )
