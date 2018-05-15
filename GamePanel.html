@@ -4,18 +4,19 @@
 		<title> GamePanel </title>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/87/three.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.js"></script>
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.1/dist/semantic.min.css">
 		<link rel="stylesheet" type="text/css" href="GamePanel.css">
 	</head>
 	<body>
 		<div class="East">
 			<p id = "timer" class="EastComponents">0.000</p>
-			<canvas class="gameCanvas EastComponents" width="400" height="400"> </canvas>
+			<div id = "sillhouetteCanvas" class="gameCanvas EastComponents"> </div>
 		</div>
 		<div class="Center" id="rotateCanvas">
 		</div>
 		<div class="South">
-			<button> Check </button>
+			<button onclick="checkAnswer()"> Check </button>
 			<button> Pass </button>
 			<button> Show Overlay </button>
 		</div>
@@ -26,56 +27,44 @@
 			timer(0);
 		};
 		var rotateContainer = document.getElementById("rotateCanvas");
+		var sillContainer = document.getElementById("sillhouetteCanvas");
+		var sillCanvasDimension = 400;
 		var rotateCanvasWidth = 900;
 		var rotateCanvasHeight = 500;
 		var three = THREE;
 		var scene = new three.Scene();
-		var camera = new three.PerspectiveCamera(75, rotateCanvasWidth / rotateCanvasHeight, 0.1, 1000);
+		var sillScene = new three.Scene();
+		var sillCamera = new three.PerspectiveCamera(70, sillCanvasDimension / sillCanvasDimension, 0.1, 1000);
+		var camera = new three.PerspectiveCamera(70, rotateCanvasWidth / rotateCanvasHeight, 0.1, 1000);
 		
+		var sillRenderer = new three.WebGLRenderer();
 		var renderer = new three.WebGLRenderer();
+		sillRenderer.setSize(400,400);
 		renderer.setSize(900, 500);
+		document.body.appendChild(sillRenderer.domElement);
 		document.body.appendChild(renderer.domElement);
 		
-		var geometry = new three.BoxGeometry(1, 1, 1);
+		var currentObject = new three.Mesh(new three.BoxGeometry(1,1,1),new THREE.MeshBasicMaterial( { color: 0xff0000 } ));
+		currentObject.rotation.x = Math.PI / 4;
+		currentObject.rotation.y = Math.PI / 4;
+		scene.add(currentObject);
 		
-		three.ImageUtils.crossOrigin = '';
-        var texture = three.ImageUtils.loadTexture('http://i.imgur.com/CEGihbB.gif');
-		texture.anisotropy = renderer.getMaxAnisotropy();
+		var sill = new three.Mesh(new three.BoxGeometry(1,1,1),new THREE.MeshBasicMaterial( { color: 0xff0000 } ));
+		sill.rotation.x = Math.PI/4;
+		sill.rotation.y = Math.PI/4;
+		sillScene.add(sill);
 		
-		var material = new three.MeshFaceMaterial([
-                    new three.MeshBasicMaterial({
-                        color: 0x00ff00,
-                    }),
-                    new three.MeshBasicMaterial({
-                        color: 0xff0000,
-                    }),
-                    new three.MeshBasicMaterial({
-                        color: 0x0000ff,
-                        // map: texture
-                    }),
-                    new three.MeshBasicMaterial({
-                        color: 0xffff00,
-                    }),
-                    new three.MeshBasicMaterial({
-                        color: 0x00ffff,
-                    }),
-                    new three.MeshBasicMaterial({
-                        color: 0xff00ff,
-                    })
-                ]);
-		
-		var cube = new three.Mesh(geometry, material);
-		cube.rotation.x = Math.PI / 4;
-		cube.rotation.y = Math.PI / 4;
-		scene.add(cube);
-		
+		sillContainer.appendChild(sillRenderer.domElement);
 		rotateContainer.appendChild(renderer.domElement);
 		
-		var geo = new THREE.EdgesGeometry(cube.geometry); // or WireframeGeometry
+		
+		var geo = new THREE.EdgesGeometry(currentObject.geometry); // or WireframeGeometry
 		var mat = new THREE.LineBasicMaterial({ color: 0xffffff, linewidth: 2 });
 		var wireframe = new THREE.LineSegments(geo, mat);
-		cube.add(wireframe);
+		currentObject.add(wireframe);
 		camera.position.z = 5;
+	
+		sillCamera.position.z = 5;
 		
 		var isDragging = false;
 		var previousMousePosition = {
@@ -99,9 +88,15 @@
 							toRadians(deltaMove.x),
 							0,
 							'XYZ'
-						));
-					cube.quaternion.multiplyQuaternions(deltaRotationQuaternion, cube.quaternion);
-					console.log(radToDeg(cube.rotation.x), radToDeg(cube.rotation.y));
+						)).normalize();
+					currentObject.quaternion.multiplyQuaternions(deltaRotationQuaternion, currentObject.quaternion);
+					var mag = (Math.pow(Math.pow(currentObject.rotation.y, 2) + Math.pow(currentObject.rotation.x, 2), 0.5))
+					var normie = {
+						x: currentObject.rotation.x/mag,
+						y: currentObject.rotation.y/mag
+					}
+					console.log(mag)
+
 				}
 				previousMousePosition = {
 					x: e.offsetX,
@@ -137,6 +132,7 @@
 			}
 			function render() {
 				renderer.render(scene, camera);
+				sillRenderer.render(sillScene,sillCamera)
 				requestAnimFrame(render);
 			}
 			render();
@@ -156,6 +152,42 @@
 				}
 				sec++;
 			});
+		}
+		/*DRAW TORUS KNOT*/
+		function draw_torus_knot(is_silhouette,scene){
+                var geometry = new THREE.TorusKnotGeometry( 10, 3, 100, 35 );
+				var material;
+                if (!is_silhouette){
+					material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );				}
+                else material = new THREE.MeshBasicMaterial( { color: 0xff0000  } );
+                material.side = THREE.DoubleSide;
+                var torusKnot = new THREE.Mesh( geometry, material );
+                torusKnot.position.set(0,0,-25);
+
+                if (is_silhouette)
+                {
+                    torusKnot.rotation.z = 0;
+                    torusKnot.rotation.x = 2.5;
+                    torusKnot.rotation.y = 2.0;
+                }
+                var magnitude = Math.pow(Math.pow(torusKnot.rotation.y,2) + Math.pow(torusKnot.rotation.x,2), 0.5)
+                console.log(magnitude)
+                normie = {
+                    x: torusKnot.rotation.x/magnitude,
+                    y: torusKnot.rotation.y/magnitude
+                }
+                // console.log(normie)
+
+                scene.add( torusKnot );
+                return torusKnot;
+        }
+		/*Function for checking*/
+		function checkAnswer(){
+			scene.remove(scene.children[0]);
+			sillScene.remove(sillScene.children[0]);
+			sillhouette = draw_torus_knot(true,sillScene)
+            currentObject = draw_torus_knot(false,scene)
+			render();
 		}
 	</script>
 </html>
