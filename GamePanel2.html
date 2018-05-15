@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title> GamePanel </title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/87/three.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.js"></script>
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.1/dist/semantic.min.css">
+		<link rel="stylesheet" type="text/css" href="GamePanel.css">
+	</head>
+	<body>
+		<div class="East">
+			<p id = "timer" class="EastComponents">0.000</p>
+			<div id = "sillhouetteCanvas" class="gameCanvas EastComponents"> </div>
+		</div>
+		<div class="Center" id="rotateCanvas">
+		</div>
+		<div class="South">
+			<button onclick="checkAnswer()"> Check </button>
+			<button> Pass </button>
+			<button> Show Overlay </button>
+		</div>
+	</body>
+	<script>
+		/*Calls Timer Function on load*/
+		window.onload = function(){
+			timer(0);
+		};
+		var rotateContainer = document.getElementById("rotateCanvas");
+		var sillContainer = document.getElementById("sillhouetteCanvas");
+		var sillCanvasDimension = 400;
+		var rotateCanvasWidth = 900;
+		var rotateCanvasHeight = 500;
+		var three = THREE;
+		var scene = new three.Scene();
+		var sillScene = new three.Scene();
+		var sillCamera = new three.PerspectiveCamera(70, sillCanvasDimension / sillCanvasDimension, 0.1, 1000);
+		var camera = new three.PerspectiveCamera(70, rotateCanvasWidth / rotateCanvasHeight, 0.1, 1000);
+		
+		var sillRenderer = new three.WebGLRenderer();
+		var renderer = new three.WebGLRenderer();
+		sillRenderer.setSize(400,400);
+		renderer.setSize(900, 500);
+		document.body.appendChild(sillRenderer.domElement);
+		document.body.appendChild(renderer.domElement);
+		
+		
+		sillhouette = half_ring(true,sillScene)
+        currentObject = half_ring(false,scene)
+		
+		sillContainer.appendChild(sillRenderer.domElement);
+		rotateContainer.appendChild(renderer.domElement);
+		
+		
+		var spotLight = new THREE.SpotLight(0xffffff)
+		spotLight.position.set(-0, 30, 60)
+		spotLight.intensity = 0.6
+		scene.add(spotLight)
+			
+			
+		camera.position.z = 5;
+	
+		sillCamera.position.z = 5;
+		
+		var isDragging = false;
+		var previousMousePosition = {
+			x: 0,
+			y: 0
+		};
+		$(renderer.domElement).on('mousedown', function (e) {
+			isDragging = true;
+		})
+			.on('mousemove', function (e) {
+				// console.log(e);
+				var deltaMove = {
+					x: e.offsetX - previousMousePosition.x,
+					y: e.offsetY - previousMousePosition.y
+				};
+				
+				if (isDragging) {
+					var deltaRotationQuaternion = new three.Quaternion()
+						.setFromEuler(new three.Euler(
+							toRadians(deltaMove.y),
+							toRadians(deltaMove.x),
+							0,
+							'XYZ'
+						)).normalize();
+					currentObject.quaternion.multiplyQuaternions(deltaRotationQuaternion, currentObject.quaternion);
+					var mag = (Math.pow(Math.pow(currentObject.rotation.y, 2) + Math.pow(currentObject.rotation.x, 2), 0.5))
+					var normie = {
+						x: currentObject.rotation.x/mag,
+						y: currentObject.rotation.y/mag
+					}
+					console.log(mag)
+
+				}
+				previousMousePosition = {
+					x: e.offsetX,
+					y: e.offsetY
+				};
+			});
+			$(document).on('mouseup', function (e) {
+				isDragging = false;
+			});
+			// shim layer with setTimeout fallback
+			window.requestAnimFrame = (function () {
+				return window.requestAnimationFrame ||
+					window.webkitRequestAnimationFrame ||
+					window.mozRequestAnimationFrame ||
+					function (callback) {
+						window.setTimeout(callback, 1000 / 60);
+					};
+			})();
+			var lastFrameTime = new Date().getTime() / 1000;
+			var totalGameTime = 0;
+			function radToDeg(rad){
+				return rad*180/Math.PI
+			}
+			
+			function update(dt, t) {
+				setTimeout(function () {
+					var currTime = new Date().getTime() / 1000;
+					var dt = currTime - (lastFrameTime || currTime);
+					totalGameTime += dt;
+					update(dt, totalGameTime);
+					lastFrameTime = currTime;
+				}, 0);
+			}
+			function render() {
+				renderer.render(scene, camera);
+				sillRenderer.render(sillScene,sillCamera)
+				requestAnimFrame(render);
+			}
+			render();
+			update(0, totalGameTime);
+			function toRadians(angle) {
+				return angle * (Math.PI / 180);
+			}
+			function toDegrees(angle) {
+				return angle * (180 / Math.PI);
+			}
+		/*Function for Timer*/
+		function timer(sec){
+			var timeout;		
+			var timer = setInterval(function(){
+				if(sec>0){
+					document.getElementById("timer").innerHTML = sec/1000;
+				}
+				sec++;
+			});
+		}
+		/*DRAW TORUS KNOT*/
+		function draw_torus_knot(is_silhouette,scene){
+			var geometry = new THREE.TorusKnotGeometry( 10, 3, 100, 35 );
+			var material;
+			if (!is_silhouette){
+				material = new THREE.MeshPhongMaterial( { color: 0x00ff00 } );				}
+			else material = new THREE.MeshBasicMaterial( { color: 0xff0000  } );
+			material.side = THREE.DoubleSide;
+			var torusKnot = new THREE.Mesh( geometry, material );
+			torusKnot.position.set(0,0,-25);
+
+			if (is_silhouette)
+			{
+				torusKnot.rotation.z = 0;
+				torusKnot.rotation.x = 2.5;
+				torusKnot.rotation.y = 2.0;
+			}
+			var magnitude = Math.pow(Math.pow(torusKnot.rotation.y,2) + Math.pow(torusKnot.rotation.x,2), 0.5)
+			console.log(magnitude)
+			normie = {
+				x: torusKnot.rotation.x/magnitude,
+				y: torusKnot.rotation.y/magnitude
+			}
+			// console.log(normie)
+
+			scene.add( torusKnot );
+			return torusKnot;
+        }
+		/*DRAW HALF RING*/
+		function half_ring (is_silhouette,scene){
+                var geometry = new THREE.RingGeometry( 18.7, 10, 8, 16, 4, 3.2 );
+                if (!is_silhouette) var material = new THREE.MeshBasicMaterial( { color: 0x11bbee, side: THREE.DoubleSide } );
+                else var material = new THREE.MeshBasicMaterial( { color: 0xff0000  } );
+
+                var mesh = new THREE.Mesh( geometry, material );
+                mesh.rotation.x = 3.5;
+                mesh.rotation.y = 1.0;
+                if (!is_silhouette)
+                {
+                    mesh.rotation.x = 2.5;
+                    mesh.rotation.y = 1.0;
+                }
+                mesh.position.set(0,0,-25);
+                scene.add( mesh );
+				return mesh;
+        }
+		/*Function for checking*/
+		function checkAnswer(){
+			scene.remove(scene.children[0]); //clear canvas
+			sillScene.remove(sillScene.children[0]); //clear canvas
+			sillhouette = draw_torus_knot(true,sillScene)
+            currentObject = draw_torus_knot(false,scene)
+			render();
+		}
+	</script>
+</html>
