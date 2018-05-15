@@ -11,11 +11,11 @@
 	</head>
 	<body>
         <!-- CDN Link to Three.js -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/87/three.js"></script>
-        <script src='./ParametricGeometry.js'></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/92/three.js"></script>
         <!--reference your JS file here. Mine looks like below-->
         <script>
-            
+
+            // var THREE = require('three');
             // helper for the creation of sine
             function CustomSinCurve( scale ) {
 
@@ -38,33 +38,6 @@
 
             };
             
-            // drawing of sine geometry
-            function draw_sine(is_silhouette = false)
-            {
-                var path = new CustomSinCurve( 7 );
-                var geometry = new THREE.TubeGeometry( path, 20, 2, 20, false );
-                if (!is_silhouette) var material = new THREE.MeshPhongMaterial( { color: 0x4283f4 } );
-                else var material = new THREE.MeshBasicMaterial( { color: 0x000000 } );
-                
-                material.side = THREE.DoubleSide;
-                var mesh = new THREE.Mesh( geometry, material );
-                
-                // set the rotation of the silhouette
-                if (is_silhouette)
-                {
-                    mesh.position.set(1, 1, -5);
-                    mesh.rotation.x = 3;
-                    mesh.rotation.y = 5;
-                }
-                else
-                {
-                    mesh.position.set(1,1,-5);
-                    mesh.rotation.y = 35;
-                }
-                
-                scene.add( mesh );
-            }
-
             function draw_torus_knot(is_silhouette = false)
             {
                 var geometry = new THREE.TorusKnotGeometry( 10, 3, 100, 35 );
@@ -83,24 +56,6 @@
                 
                 scene.add( torusKnot );
             }
-
-            // helper for the parameteric geometries
-            function klein (u = 2, v = 5) 
-            {
-                u *= Math.PI;
-                v *= 2 * Math.PI;
-                u = u * 2;
-                var x, y, z;
-                if (u < Math.PI) {
-                    x = 3 * Math.cos(u) * (1 + Math.sin(u)) + (2 * (1 - Math.cos(u) / 2)) * Math.cos(u) * Math.cos(v);
-                    z = -8 * Math.sin(u) - 2 * (1 - Math.cos(u) / 2) * Math.sin(u) * Math.cos(v);
-                } else {
-                    x = 3 * Math.cos(u) * (1 + Math.sin(u)) + (2 * (1 - Math.cos(u) / 2)) * Math.cos(v + Math.PI);
-                    z = -8 * Math.sin(u);
-                }
-                y = -2 * (1 - Math.cos(u) / 2) * Math.sin(v);
-                return new THREE.Vector3(x, y, z);
-            };
 
             function half_ring (is_silhouette = false)
             {
@@ -122,48 +77,121 @@
                 scene.add( mesh );
             }
             
-            function draw_heart (is_silhouette = false)
+
+            function rand_1 (is_silhouette = false)
             {
-                var x = 0, y = 0;
+                const v1 = 2;
+                const v2 = 1;
+                const v3 = 0.5;
 
-                var heartShape = new THREE.Shape();
+                var group = new THREE.Group();
 
-                heartShape.moveTo( x + 5, y + 5 );
-                heartShape.bezierCurveTo( x + 5, y + 5, x + 4, y, x, y );
-                heartShape.bezierCurveTo( x - 6, y, x - 6, y + 7,x - 6, y + 7 );
-                heartShape.bezierCurveTo( x - 6, y + 11, x - 3, y + 15.4, x + 5, y + 19 );
-                heartShape.bezierCurveTo( x + 12, y + 15.4, x + 16, y + 11, x + 16, y + 7 );
-                heartShape.bezierCurveTo( x + 16, y + 7, x + 16, y, x + 10, y );
-                heartShape.bezierCurveTo( x + 7, y, x + 5, y + 5, x + 5, y + 5 );
+                // Cube
+                var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+                for ( var i = 0; i < geometry.faces.length; i += 2 ) {
+                        var hex = Math.random() * 0xffffff;
+                        geometry.faces[ i ].color.setHex( hex );
+                        geometry.faces[ i + 1 ].color.setHex( hex );
+                }
+                var material = new THREE.MeshBasicMaterial( { vertexColors: THREE.FaceColors, overdraw: 0.5 } );
 
-                var geometry = new THREE.ShapeBufferGeometry( heartShape );
-                if (!is_silhouette) var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-                else var material = new THREE.MeshBasicMaterial( { color: 0x000000  } );
+                if (is_silhouette) var material = new THREE.MeshBasicMaterial( { color: 0x000000 } );
+
+                var cube = new THREE.Mesh( geometry, material );
+                cube.position.x = 0;
+                cube.position.y = 0;
+                cube.position.z = 0;
+                group.add( cube );
+
+                var cube = new THREE.Mesh( geometry, material );
+                cube.position.x = 0;
+                cube.position.y = 1;
+                cube.position.z = 0;
+                group.add( cube );
+
+                var cube = new THREE.Mesh( geometry, material );
+                cube.position.x = 0.1;
+                cube.position.y = 0.1;
+                cube.position.z = 0;
+                group.add( cube );
                 
-                var mesh = new THREE.Mesh( geometry, material ) ;
-                mesh.rotation.z = 3.1;
+                var cube = new THREE.Mesh( geometry, material );
+                cube.position.x = 0.5;
+                cube.position.y = 1.5;
+                cube.position.z = 0.0;
+                group.add( cube );
+
+                var cube = new THREE.Mesh( geometry, material );
+                cube.position.x = -1;
+                cube.position.y = 1;
+                cube.position.z = 0;
+                group.add( cube );
+
+                var cube = new THREE.Mesh( geometry, material );
+                cube.position.x = -1.5;
+                cube.position.y = 1.5;
+                cube.position.z = 0;
+                group.add( cube );
+
+                var mesh = new THREE.Mesh( group, material );
+
                 if (is_silhouette)
                 {
-                    mesh.rotation.z = 0.0;
-                    mesh.rotation.x = 3.5;
-                    mesh.rotation.y = 4.5;
+                    group.rotation.x = 0.5;
+                    group.rotation.y = 1.5;
                 }
-                mesh.position.set(10,10,-30);                
-                scene.add( mesh );
+                scene.add(group);
+
+                group.position.set(3, 0, 5)
             }
 
-            function draw_klein (is_silhouette = false)
+            function rand_2 (is_silhouette = false)
             {
-                var geometry = new THREE.ParametricGeometry(THREE.ParametricGeometries.klein, 25, 25 );
-                if (!is_silhouette) var material = new THREE.MeshPhongMaterial( { color: 0x11bbee } );
-                else var material = new THREE.MeshBasicMaterial( { color: 0x000000  } );
-                material.side = THREE.DoubleSide;
-                var klein = new THREE.Mesh( geometry, material );
-                klein.position.set(3,0, -5);
-                klein.rotation.x = 5.0;
-                klein.rotation.y = 13.0;
-                klein.rotation.z = 0.0;
-                scene.add( klein );
+                const v1 = 2;
+                const v2 = 1;
+                const v3 = 0.5;
+
+                var group = new THREE.Group();
+
+                var geometry = new THREE.SphereGeometry( 5, 32, 32 );
+                var material = new THREE.MeshPhongMaterial( {color: 0xffff00} );
+                if (is_silhouette) var material = new THREE.MeshBasicMaterial( { color: 0x000000 } );
+                
+                var sphere = new THREE.Mesh( geometry, material );
+                sphere.position.x = 2.5;
+                sphere.position.y = -3.5;
+                sphere.position.z = 0;
+                group.add( sphere );
+
+                var sphere = new THREE.Mesh( geometry, material );
+                sphere.position.x = 0.5;
+                sphere.position.y = -3.5;
+                sphere.position.z = 0;
+                group.add( sphere );
+                
+                var sphere = new THREE.Mesh( geometry, material );
+                sphere.position.x = 2.5;
+                sphere.position.y = 1.5;
+                sphere.position.z = 0.0;
+                group.add( sphere );
+
+
+                var sphere = new THREE.Mesh( geometry, material );
+                sphere.position.x = -2.5;
+                sphere.position.y = 1.5;
+                sphere.position.z = 0;
+                group.add( sphere );
+
+                var mesh = new THREE.Mesh( group, material );
+
+                if (is_silhouette)
+                {
+                    group.rotation.x = 0.5;
+                    group.rotation.y = 1.5;
+                }
+                scene.add(group);
+
+                group.position.set(3, 0, -15)
             }
 
             
@@ -182,8 +210,8 @@
 
 
             camera.position.z = 12;
-
-            draw_klein();
+            
+            rand_2(true);
 
             renderer.setSize( window.innerWidth, window.innerHeight )
             document.body.appendChild( renderer.domElement )
