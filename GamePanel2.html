@@ -43,6 +43,8 @@
 		var count = 1;
 		var sillRenderer = new three.WebGLRenderer();
 		var renderer = new three.WebGLRenderer();
+		var local = localStorage;
+		var username = "user";
 		sillRenderer.setSize(400,400);
 		renderer.setSize(900, 500);
 		document.body.appendChild(sillRenderer.domElement);
@@ -146,6 +148,30 @@
 		  totalSeconds += 5;
 		  secondsLabel.innerHTML = pad(parseInt(totalSeconds/1000));
 		  millisecondsLabel.innerHTML = pad(parseInt(totalSeconds%1000));
+		}
+		
+		function setLocal(key, value)
+		{
+			localStorage.setItem(key, value);
+		}
+
+		function getLocal(key)
+		{
+			return localStorage.getItem(key);
+		}
+		
+
+		function addHighScore(score)
+		{
+			for (var i = 0; i < 5; i += 1)
+			{
+				if (parseInt(score) < parseInt(getLocal(i)))
+				{
+					console.log("setting " + i + " : " + score);
+					setLocal(i, score);
+					break;
+				}
+			}
 		}
 
 		function pad(val) {
@@ -903,8 +929,9 @@
 				currentObject = rand_4(false,scene,0);
 			}
 			else if(count>10){
-				final_time = document.getElementById("timer").innerHTML;
+				final_time = document.getElementById("milliseconds").innerHTML;
 				console.log("FT:"+final_time);
+				addHighScore(final_time);
 				window.location.href="highscore.html"
 			}
 			render();
