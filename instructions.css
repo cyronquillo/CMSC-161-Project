@@ -9,6 +9,8 @@ body{
 	text-align: center;
 	font-weight:bold;
 	font-size: 72px;
+	position: relative;
+	top: 1em;
 }
 .ins{
 	font-family: 'Rubik', sans-serif;
