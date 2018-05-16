@@ -13,6 +13,9 @@ p{
 }
 
 .grid{}
+button{
+	text-align: center;
+}
 
 .column{
 	color: white;
