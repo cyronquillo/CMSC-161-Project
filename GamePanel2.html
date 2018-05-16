@@ -10,7 +10,7 @@
 	</head>
 	<body>
 		<div class="East">
-			<p id = "timer" class="EastComponents"><label id="seconds">00</label>:<label id="milliseconds">00</label></p>
+			<p id = "timer" class="EastComponents"><label id="seconds">00</label>.<label id="milliseconds">00</label></p>
 			<div id = "sillhouetteCanvas" class="gameCanvas EastComponents"> </div>
 		</div>
 		<div class="Center" id="rotateCanvas">
@@ -57,7 +57,10 @@
 		scene.add(spotLight)	
 		
 		sillhouette = half_ring(true,sillScene,0)
-        currentObject = half_ring(false,scene,0)
+        currentObject = half_ring(false ,scene,0)
+
+		console.log(sillhouette.mesh.rotation.x, sillhouette.mesh.rotation.y)
+		console.log(currentObject.mesh.rotation.x, currentObject.mesh.rotation.y)
 		
 		sillContainer.appendChild(sillRenderer.domElement);
 		rotateContainer.appendChild(renderer.domElement);
@@ -89,14 +92,14 @@
 							0,
 							'XYZ'
 						)).normalize();
-					currentObject.quaternion.multiplyQuaternions(deltaRotationQuaternion, currentObject.quaternion);
-					var mag = (Math.pow(Math.pow(currentObject.rotation.y, 2) + Math.pow(currentObject.rotation.x, 2), 0.5))
-					var normie = {
-						x: currentObject.rotation.x/mag,
-						y: currentObject.rotation.y/mag
-					}
-					console.log(mag)
+					currentObject.mesh.quaternion.multiplyQuaternions(deltaRotationQuaternion, currentObject.mesh.quaternion);
+					
+					var x = currentObject.mesh.rotation.x - sillhouette.mesh.rotation.x
+					var y = currentObject.mesh.rotation.y - sillhouette.mesh.rotation.y
 
+					var dist = Math.sqrt(x*x + y*y);
+					console.log(currentObject.mesh.rotation.x, currentObject.mesh.rotation.y)
+					console.log("dist: " + dist)
 				}
 				previousMousePosition = {
 					x: e.offsetX,
@@ -213,16 +216,16 @@
 				torusKnot.rotation.x = 2.5;
 				torusKnot.rotation.y = 2.0;
 			}
-			var magnitude = Math.pow(Math.pow(torusKnot.rotation.y,2) + Math.pow(torusKnot.rotation.x,2), 0.5)
-			console.log(magnitude)
-			normie = {
-				x: torusKnot.rotation.x/magnitude,
-				y: torusKnot.rotation.y/magnitude
-			}
-			// console.log(normie)
 
 			scene.add( torusKnot );
-			return torusKnot;
+			return {
+				mesh:torusKnot,
+				solutions:[
+					[2.5,2.0],
+					[-0.88, 1.09],
+					[2.33, -1.07],
+				],
+			};
         }
 		/*DRAW HALF RING*/
 		function half_ring (is_silhouette,scene,i){
@@ -244,7 +247,15 @@
 			}
 			mesh.position.set(0,0,-30);
 			scene.add( mesh );
-			return mesh;
+			return {
+				mesh:mesh,
+				solutions:[
+					[3.5, 1],
+					[-0.75, -0.83],
+					[-3.12, 1],
+					[0.36, -0.97]
+				]
+			}
         }
 		/*DRAW CUBE CLUSTER*/
 		function draw_cube_cluster (is_silhouette,scene,i)
@@ -347,7 +358,14 @@
 					// group.rotation.y = 2
 				}
 				scene.add(group);
-				return group;
+				return {
+					mesh:group,
+					solutions:[
+						[1.5, 8],
+						[-1.78, 1.46]
+					
+					]
+				}
 			}
 		/*DRAW CROSS*/
 		function draw_cross (is_silhouette,scene,i)
@@ -412,7 +430,15 @@
 					group.rotation.y = 3
 				}
 				scene.add(group);
-				return group;
+				return {
+					mesh:group,
+					solutions:[
+						[5,3],
+						[1.85, 0.15],
+						[-1.30, -0.08]
+
+					]
+				}
 			}
 		/*DRAW STAIRS*/
 		function draw_stairs (is_silhouette,scene,i)
@@ -536,7 +562,13 @@
 				}
 				
 				scene.add(group);
-				return group;
+				return {
+					mesh:group,
+					solutions:[
+						[2.25, 1],
+						[-4, 1]
+					]
+				}
 			}
 		/*DRAW TETRIS*/
 		function draw_tetris_z1 (is_silhouette,scene,i)
@@ -592,7 +624,13 @@
 					group.rotation.y = 5.33;
 				}
 				scene.add(group);
-				return group;
+				return {
+					mesh: group,
+					solutions:[
+						[1.67, 5.33],
+						[1.78, -0.91]
+					]
+				};
 			}
 			function rand_1 (is_silhouette,scene,i)
             {
@@ -662,62 +700,105 @@
                 scene.add(group);
 
                 //group.position.set(3, 0, 5)
-				return group;
+				return {
+					mesh: group,
+					solutions:[
+						[0.5,1.5],
+						[-1.78, 1.25]
+						[1.00, 1.25]
+					]
+				}
             }
 
-            function rand_2 (is_silhouette,scene,i)
-            {
-                const v1 = 2;
-                const v2 = 1;
-                const v3 = 0.5;
+            function rand_2(is_silhouette, scene, i) {
+				var group = new THREE.Group();
 
-                var group = new THREE.Group();
+				var geometry = new THREE.CubeGeometry(1, 1, 1);
+				var material = new THREE.MeshPhongMaterial({ color: 0xffff00 });
+				if (is_silhouette && i==0) var material = new THREE.MeshBasicMaterial({ color: 0x0000ff });
+				else if (is_silhouette && i == 1) var material = new THREE.MeshBasicMaterial({ color: 0x0000ff,transparent:true, opacity:0.2 });
+				var cube = new THREE.Mesh(geometry, material);
+				cube.position.x = -2;
+				cube.position.y = -2;
+				cube.position.z = 0;
+				group.add(cube);
 
-                var geometry = new THREE.SphereGeometry( 5, 32, 32 );
-                var material = new THREE.MeshPhongMaterial( {color: 0xffff00} );
-                if (is_silhouette && i==0) var material = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
-				else if (is_silhouette && i==1) var material = new THREE.MeshBasicMaterial( { color: 0xff0000, transparent:true, opacity:0.2 } );
-                
-                var sphere = new THREE.Mesh( geometry, material );
-                sphere.position.x = 2.5;
-                sphere.position.y = -3.5;
-                sphere.position.z = 0;
-                group.add( sphere );
+				var cube = new THREE.Mesh(geometry, material);
+				cube.position.x = -1;
+				cube.position.y = -2;
+				cube.position.z = 0;
+				group.add(cube);
 
-                var sphere = new THREE.Mesh( geometry, material );
-                sphere.position.x = 0.5;
-                sphere.position.y = -3.5;
-                sphere.position.z = 0;
-                group.add( sphere );
-                
-                var sphere = new THREE.Mesh( geometry, material );
-                sphere.position.x = 2.5;
-                sphere.position.y = 1.5;
-                sphere.position.z = 0.0;
-                group.add( sphere );
+				var cube = new THREE.Mesh(geometry, material);
+				cube.position.x = 0;
+				cube.position.y = -2;
+				cube.position.z = 0;
+				group.add(cube);
 
+				var cube = new THREE.Mesh(geometry, material);
+				cube.position.x = 1;
+				cube.position.y = -2;
+				cube.position.z = 0;
+				group.add(cube);
 
-                var sphere = new THREE.Mesh( geometry, material );
-                sphere.position.x = -2.5;
-                sphere.position.y = 1.5;
-                sphere.position.z = 0;
-                group.add( sphere );
+				var cube = new THREE.Mesh(geometry, material);
+				cube.position.x = 2;
+				cube.position.y = -2;
+				cube.position.z = 0;
+				group.add(cube);
 
-                var mesh = new THREE.Mesh( group, material );
+				var cube = new THREE.Mesh(geometry, material);
+				cube.position.x = 2;
+				cube.position.y = -1;
+				cube.position.z = 0;
+				group.add(cube);
 
-                if (is_silhouette)
-				{
+				var cube = new THREE.Mesh(geometry, material);
+				cube.position.x = 0;
+				cube.position.y = -2;
+				cube.position.z = -1;
+				group.add(cube);
+
+				var cube = new THREE.Mesh(geometry, material);
+				cube.position.x = 0;
+				cube.position.y = -2;
+				cube.position.z = -2;
+				group.add(cube);
+
+				var cube = new THREE.Mesh(geometry, material);
+				cube.position.x = 0;
+				cube.position.y = -1;
+				cube.position.z = -2;
+				group.add(cube);
+
+				var cube = new THREE.Mesh(geometry, material);
+				cube.position.x = -2;
+				cube.position.y = -3;
+				cube.position.z = 0;
+				group.add(cube);
+
+				var mesh = new THREE.Mesh(group, material);
+
+				if (is_silhouette) {
 					// group.rotation.x = 1.4;
 					// group.rotation.y = 1;
 
 					group.rotation.x = 6;
 					group.rotation.y = 4;
 				}
-                scene.add(group);
+				scene.add(group);
 
-                group.position.set(-1, 0, -10)
-				return group;
-            }
+				group.position.set(-1, 0, -3)
+				return {
+					mesh:group,
+					solutions:[
+						[6,4],
+						[2.9, -1.0]
+					]
+				}
+			}
+
+		
 			function rand_3 (is_silhouette,scene,i)
 			{
 				var group = new THREE.Group();
@@ -797,7 +878,13 @@
 				scene.add(group);
 
 				
-				return group;
+				return {
+					mesh:group,
+					solutions:[
+						[4,1],
+						[-2.15, 1.06]
+					]
+				}
 			}
 
 		function rand_4 (is_silhouette,scene,i)
@@ -882,68 +969,91 @@
 			scene.add(group);
 
 			
-			return group;
+			return {
+				mesh:group,
+				solutions:[
+					[-1.21, -0.03],
+					[2,3]
+				]
+			}
 		}
 		/*Function for checking*/
-		function checkAnswer(){
-			count++;
-			console.log("count: "+count);
-			console.log("children: "+scene.children.length)
-			console.log("sillchildren: "+sillScene.children.length)
-			while(scene.children.length>0){
-				scene.remove(scene.children[0]); //clear canvas
+		function check_threshold(obj) {
+			var sols = obj.solutions;
+			for (var i = 0; i < sols.length; i++) {
+				var x = obj.mesh.rotation.x - sols[i][0];
+				var y = obj.mesh.rotation.y - sols[i][1];
+				var dist = Math.sqrt(x * x + y * y);
+				if (dist <= 1) return true;
 			}
-			sillScene.remove(sillScene.children[0]); //clear canvas
-			var spotLight = new THREE.SpotLight(0xffffff)
-			spotLight.position.set(-0, 30, 60)
-			spotLight.intensity = 1
-			scene.add(spotLight)
+			return false;
+		}
+			/*Function for checking*/
+		function checkAnswer() {
+			var boo = check_threshold(currentObject);
+			if (!boo) {
+				totalSeconds += 5000;
+				alert("does not match sillhouette!")
+			} else {
+				count++;
+				console.log("count: "+count);
+				console.log("children: "+scene.children.length)
+				console.log("sillchildren: "+sillScene.children.length)
+				while(scene.children.length>0){
+					scene.remove(scene.children[0]); //clear canvas
+				}
+				sillScene.remove(sillScene.children[0]); //clear canvas
+				var spotLight = new THREE.SpotLight(0xffffff)
+				spotLight.position.set(-0, 30, 60)
+				spotLight.intensity = 1
+				scene.add(spotLight)
 
-			if(count==2){					
-				sillhouette = draw_torus_knot(true,sillScene,0)
-				currentObject = draw_torus_knot(false,scene,0)
+				if(count==2){					
+					sillhouette = draw_torus_knot(true,sillScene,0)
+					currentObject = draw_torus_knot(false,scene,0)
+				}
+				else if(count==3){
+					sillhouette = draw_cube_cluster(true,sillScene,0)
+					currentObject = draw_cube_cluster(false,scene,0)
+				}
+				else if(count==4){
+					sillhouette = draw_cross(true,sillScene,0)
+					currentObject = draw_cross(false,scene,0)
+				}
+				else if(count==5){
+					sillhouette = draw_stairs(true,sillScene,0)
+					currentObject = draw_stairs(false,scene,0)
+				}
+				else if(count==6){
+					sillhouette = draw_tetris_z1(true,sillScene,0)
+					currentObject = draw_tetris_z1(false,scene,0)
+				}
+				else if(count==7){
+					sillhouette = rand_1(true,sillScene,0)
+					currentObject = rand_1(false,scene,0)
+				}
+				else if(count==8){
+					sillhouette = rand_2(true,sillScene,0)
+					currentObject = rand_2(false,scene,0)
+				}
+				else if(count == 9){
+					sillhouette = rand_3(true,sillScene,0);
+					currentObject = rand_3(false,scene,0);
+				}
+				else if(count == 10){
+					sillhouette = rand_4(true,sillScene,0);
+					currentObject = rand_4(false,scene,0);
+				}
+				else if(count>10){
+					final_time = document.getElementById("seconds").innerHTML + "," + document.getElementById("milliseconds").innerHTML;
+					console.log("FT:"+final_time);
+					addHighScore(final_time);
+					window.location.href="highscore.html"
+				}
 			}
-			else if(count==3){
-				sillhouette = draw_cube_cluster(true,sillScene,0)
-				currentObject = draw_cube_cluster(false,scene,0)
-			}
-			else if(count==4){
-				sillhouette = draw_cross(true,sillScene,0)
-				currentObject = draw_cross(false,scene,0)
-			}
-			else if(count==5){
-				sillhouette = draw_stairs(true,sillScene,0)
-				currentObject = draw_stairs(false,scene,0)
-			}
-			else if(count==6){
-				sillhouette = draw_tetris_z1(true,sillScene,0)
-				currentObject = draw_tetris_z1(false,scene,0)
-			}
-			else if(count==7){
-				sillhouette = rand_1(true,sillScene,0)
-				currentObject = rand_1(false,scene,0)
-			}
-			else if(count==8){
-				sillhouette = rand_2(true,sillScene,0)
-				currentObject = rand_2(false,scene,0)
-			}
-			else if(count == 9){
-				sillhouette = rand_3(true,sillScene,0);
-				currentObject = rand_3(false,scene,0);
-			}
-			else if(count == 10){
-				sillhouette = rand_4(true,sillScene,0);
-				currentObject = rand_4(false,scene,0);
-			}
-			else if(count>10){
-				final_time = document.getElementById("seconds").innerHTML + "," + document.getElementById("milliseconds").innerHTML;
-				console.log("FT:"+final_time);
-				addHighScore(final_time);
-				window.location.href="highscore.html"
-			}
-			render();
 		}
 		function showOverlay(){
+			totalSeconds += 10000
 			if(count==1){
 				if(scene.children.length==2)overlay = half_ring(true,scene,1);
 			}
