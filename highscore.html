@@ -2,9 +2,78 @@
 <html>
 	<head>
 		<title> High Scores! </title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.1/dist/semantic.min.css">
+        <script
+          src="https://code.jquery.com/jquery-3.1.1.min.js"
+          integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+          crossorigin="anonymous"></script>
+          <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.1/dist/semantic.min.js"></script>
 		<link rel="stylesheet" type="text/css" href="highscore.css">
 	</head>
 	<body>
-		<p> HIGH SCORES</p>
+		<script>
+			var local = localStorage;
+			var username = "user";
+
+			function setLocal(key, value)
+			{
+				local.setItem(value);
+			}
+
+			function getLocal(key)
+			{
+				return local.getItem(key);
+			}
+			
+			$(document).ready(function()
+			{
+				for (var i = 0; i < 5; i += 1)
+				{
+					if (getLocal(i) == '99999999') document.getElementById(i).innerText = 'NONE';
+					
+					else document.getElementById(i).innerText = getLocal(i);
+				}
+			});
+			
+		</script>
+		<p> BEST TIMES</p>
+		<br>
+		<br>
+		<br>
+		<br>
+		<div class="container">
+			<div class="ui grid">
+			<div class="row">
+				<div class="sixteen wide column">
+					Time
+				</div>
+			</div>
+			<div class="row one_">
+				<div class="sixteen wide column" id = 0>
+					Time
+				</div>
+			</div>
+			<div class="row two_">
+				<div class="sixteen wide column" id = 1>
+					Time
+				</div>
+			</div>
+			<div class="row three_">
+				<div class="sixteen wide column" id = 2>
+					Time
+				</div>
+			</div>
+			<div class="row" id = 3>
+				<div class="sixteen wide column" id = 3>
+					Time
+				</div>
+			</div>
+			<div class="row" id = 4>
+				<div class="sixteen wide column" id = 4>
+					Time
+				</div>
+			</div>
+			</div>
+		</div>
 	</body>
 </html>

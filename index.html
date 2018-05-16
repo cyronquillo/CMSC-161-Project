@@ -12,6 +12,28 @@
     </head>
     <body onload="animate();">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/87/three.js"></script>
+        <script>
+            function setLocal(key, value)
+            {
+                localStorage.setItem(key, value);
+            }
+
+            function getLocal(key)
+            {
+                return localStorage.getItem(key);
+            }
+            
+            if (getLocal('init') == null)
+            {
+                // initialization of scores
+                for (var i = 0; i < 5; i += 1)
+                {
+                    setLocal(i, '99999999');
+                }
+
+                getLocal('init') == 'true';
+            }
+        </script>
         <div id="title" class="menu">
             ROTOCOPY
         </div>
