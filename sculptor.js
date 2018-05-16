@@ -1,3 +1,4 @@
+
 /*DRAW CUBE CLUSTER*/
 function draw_cube_cluster (is_silhouette,scene)
     {
@@ -486,32 +487,170 @@ function draw_tetris_z1 (is_silhouette,scene)
         return group;
     }
 
-    // function rand_3 (is_silhouette,scene)
-    // {
-    //     var group = new THREE.Group();
-    //
-    //     var geometry = new THREE.CubeGeometry( 1, 1, 1 );
-    //     var material = new THREE.MeshPhongMaterial( {color: 0xffff00} );
-    //     if (is_silhouette) var material = new THREE.MeshBasicMaterial( { color: 0x0000ff } );
-    //
-    //     var cube = new THREE.Mesh( geometry, material );
-    //     cube.position.x = -2;
-    //     cube.position.y = -2;
-    //     cube.position.z = 0;
-    //     group.add( cube );
-    //
-    //     var mesh = new THREE.Mesh( group, material );
-    //
-    //     if (is_silhouette)
-    //     {
-    //         // group.rotation.x = 1.4;
-    //         // group.rotation.y = 1;
-    //
-    //         // group.rotation.x = 6;
-    //         // group.rotation.y = 4;
-    //     }
-    //     scene.add(group);
-    //
-    //     group.position.set(-1, 0, -3)
-    //     return group;
-    // }
+    function rand_3 (is_silhouette,scene)
+    {
+        var group = new THREE.Group();
+
+        var geometry = new THREE.CubeGeometry( 1, 1, 1 );
+        var material = new THREE.MeshPhongMaterial( {color: 0xffff00} );
+        if (is_silhouette) var material = new THREE.MeshBasicMaterial( { color: 0x0000ff } );
+
+        var cube = new THREE.Mesh( geometry, material );
+        cube.position.x = 0;
+        cube.position.y = 0;
+        cube.position.z = 0;
+        group.add( cube );
+
+        var cube = new THREE.Mesh( geometry, material );
+        cube.position.x = 1;
+        cube.position.y = 1;
+        cube.position.z = -1;
+        group.add( cube );
+
+        var cube = new THREE.Mesh( geometry, material );
+        cube.position.x = -1;
+        cube.position.y = 0;
+        cube.position.z = -1;
+        group.add( cube );
+
+        var cube = new THREE.Mesh( geometry, material );
+        cube.position.x = 2;
+        cube.position.y = 2;
+        cube.position.z = 0;
+        group.add( cube );
+
+        var cube = new THREE.Mesh( geometry, material );
+        cube.position.x = 2;
+        cube.position.y = 3;
+        cube.position.z = 0;
+        group.add( cube );
+
+        var cube = new THREE.Mesh( geometry, material );
+        cube.position.x = 2;
+        cube.position.y = 1;
+        cube.position.z = 0;
+        group.add( cube );
+
+        var cube = new THREE.Mesh( geometry, material );
+        cube.position.x = 1;
+        cube.position.y = 0;
+        cube.position.z = 0;
+        group.add( cube );
+
+        var cube = new THREE.Mesh( geometry, material );
+        cube.position.x = 3;
+        cube.position.y = 3;
+        cube.position.z = -1;
+        group.add( cube );
+
+        var cube = new THREE.Mesh( geometry, material );
+        cube.position.x = 3;
+        cube.position.y = 2;
+        cube.position.z = -1;
+        group.add( cube );
+
+        var cube = new THREE.Mesh( geometry, material );
+        cube.position.x = 2;
+        cube.position.y = 0;
+        cube.position.z = 0;
+        group.add( cube );
+
+        var mesh = new THREE.Mesh( group, material );
+
+        if (is_silhouette)
+        {
+            // group.rotation.x = 7;
+            // group.rotation.y = 2;
+
+            group.rotation.x = 4;
+            group.rotation.y = 1;
+        }
+        scene.add(group);
+
+        group.position.set(0, 1.5, -5)
+        return group;
+    }
+
+    function rand_4 (is_silhouette,scene)
+    {
+        var group = new THREE.Group();
+
+        var geometry = new THREE.CubeGeometry( 1, 1, 1 );
+        var material = new THREE.MeshPhongMaterial( {color: 0xffff00} );
+        if (is_silhouette) var material = new THREE.MeshBasicMaterial( { color: 0x0000ff } );
+
+        var cube = new THREE.Mesh( geometry, material );
+        cube.position.x = 0;
+        cube.position.y = 0;
+        cube.position.z = 0;
+        group.add( cube );
+
+        var cube = new THREE.Mesh( geometry, material );
+        cube.position.x = 0;
+        cube.position.y = -1;
+        cube.position.z = 0;
+        group.add( cube );
+
+        var cube = new THREE.Mesh( geometry, material );
+        cube.position.x = 0;
+        cube.position.y = 1;
+        cube.position.z = 0;
+        group.add( cube );
+
+        var cube = new THREE.Mesh( geometry, material );
+        cube.position.x = 1;
+        cube.position.y = 0;
+        cube.position.z = 0;
+        group.add( cube );
+
+        var cube = new THREE.Mesh( geometry, material );
+        cube.position.x = -1;
+        cube.position.y = 0;
+        cube.position.z = 0;
+        group.add( cube );
+
+        var cube = new THREE.Mesh( geometry, material );
+        cube.position.x = 1;
+        cube.position.y = -1;
+        cube.position.z = 0;
+        group.add( cube );
+
+        var cube = new THREE.Mesh( geometry, material );
+        cube.position.x = 0;
+        cube.position.y = 2;
+        cube.position.z = 0;
+        group.add( cube );
+
+        var cube = new THREE.Mesh( geometry, material );
+        cube.position.x = 1;
+        cube.position.y = 2;
+        cube.position.z = 0;
+        group.add( cube );
+
+        var cube = new THREE.Mesh( geometry, material );
+        cube.position.x = -2;
+        cube.position.y = 0;
+        cube.position.z = 0;
+        group.add( cube );
+
+        var cube = new THREE.Mesh( geometry, material );
+        cube.position.x = -2;
+        cube.position.y = 1;
+        cube.position.z = 0;
+        group.add( cube );
+
+        var mesh = new THREE.Mesh( group, material );
+
+        if (is_silhouette)
+        {
+            group.rotation.x = 2;
+            group.rotation.y = 3;
+
+            // group.rotation.x = 4;
+            // group.rotation.y = 7;
+        }
+        scene.add(group);
+
+        group.position.set(0, 0, -5)
+        return group;
+    }
