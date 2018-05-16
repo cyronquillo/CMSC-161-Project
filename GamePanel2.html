@@ -56,6 +56,9 @@
 		
 		sillhouette = half_ring(true,sillScene,0)
         currentObject = half_ring(false,scene,0)
+
+		console.log(sillhouette.mesh.rotation.x, sillhouette.mesh.rotation.y)
+		console.log(currentObject.mesh.rotation.x, currentObject.mesh.rotation.y)
 		
 		sillContainer.appendChild(sillRenderer.domElement);
 		rotateContainer.appendChild(renderer.domElement);
@@ -87,14 +90,14 @@
 							0,
 							'XYZ'
 						)).normalize();
-					currentObject.quaternion.multiplyQuaternions(deltaRotationQuaternion, currentObject.quaternion);
-					var mag = (Math.pow(Math.pow(currentObject.rotation.y, 2) + Math.pow(currentObject.rotation.x, 2), 0.5))
-					var normie = {
-						x: currentObject.rotation.x/mag,
-						y: currentObject.rotation.y/mag
-					}
-					console.log(mag)
+					currentObject.mesh.quaternion.multiplyQuaternions(deltaRotationQuaternion, currentObject.mesh.quaternion);
+					
+					var x = currentObject.mesh.rotation.x - sillhouette.mesh.rotation.x
+					var y = currentObject.mesh.rotation.y - sillhouette.mesh.rotation.y
 
+					var dist = Math.sqrt(x*x + y*y);
+					console.log(currentObject.mesh.rotation.x, currentObject.mesh.rotation.y)
+					console.log("dist: " + dist)
 				}
 				previousMousePosition = {
 					x: e.offsetX,
@@ -211,7 +214,15 @@
 			}
 			mesh.position.set(0,0,-30);
 			scene.add( mesh );
-			return mesh;
+			return {
+				mesh:mesh,
+				solutions:[
+					[3.5, 1],
+					[-0.75, -0.83],
+					[-3.12, 1],
+					[0.36, -0.97]
+				]
+			}
         }
 		/*DRAW CUBE CLUSTER*/
 		function draw_cube_cluster (is_silhouette,scene,i)
@@ -685,55 +696,71 @@
                 group.position.set(-1, 0, -10)
 				return group;
             }
+		function check_threshold(obj) {
+			var sols = obj.solutions;
+			for(var i = 0; i < sols.length; i++){
+				var x = obj.mesh.rotation.x - sols[i][0];
+				var y = obj.mesh.rotation.y - sols[i][1];
+				var dist = Math.sqrt(x*x + y*y);
+				if(dist <= 1) return true;
+			}
+
+			return false;
+		}
 		/*Function for checking*/
 		function checkAnswer(){
-			count++;
-			console.log("count: "+count);
-			console.log("children: "+scene.children.length)
-			console.log("sillchildren: "+sillScene.children.length)
-			while(scene.children.length>0){
-				scene.remove(scene.children[0]); //clear canvas
-			}
-			sillScene.remove(sillScene.children[0]); //clear canvas
-			var spotLight = new THREE.SpotLight(0xffffff)
-			spotLight.position.set(-0, 30, 60)
-			spotLight.intensity = 1
-			scene.add(spotLight)
+			var boo = check_threshold(currentObject);
+			if(!boo){
+				alert("does not match sillhouette!")
+			} else{
+				count++; 
+				console.log("count: "+count);
+				console.log("children: "+scene.children.length)
+				console.log("sillchildren: "+sillScene.children.length)
+				while(scene.children.length>0){
+					scene.remove(scene.children[0]); //clear canvas
+				}
+				sillScene.remove(sillScene.children[0]); //clear canvas
+				var spotLight = new THREE.SpotLight(0xffffff)
+				spotLight.position.set(-0, 30, 60)
+				spotLight.intensity = 1
+				scene.add(spotLight)
 
-			if(count==2){					
-				sillhouette = draw_torus_knot(true,sillScene,0)
-				currentObject = draw_torus_knot(false,scene,0)
+				if(count==2){					
+					sillhouette = draw_torus_knot(true,sillScene,0)
+					currentObject = draw_torus_knot(false,scene,0)
+				}
+				else if(count==3){
+					sillhouette = draw_cube_cluster(true,sillScene,0)
+					currentObject = draw_cube_cluster(false,scene,0)
+				}
+				else if(count==4){
+					sillhouette = draw_cross(true,sillScene,0)
+					currentObject = draw_cross(false,scene,0)
+				}
+				else if(count==5){
+					sillhouette = draw_stairs(true,sillScene,0)
+					currentObject = draw_stairs(false,scene,0)
+				}
+				else if(count==6){
+					sillhouette = draw_tetris_z1(true,sillScene,0)
+					currentObject = draw_tetris_z1(false,scene,0)
+				}
+				else if(count==7){
+					sillhouette = rand_1(true,sillScene,0)
+					currentObject = rand_1(false,scene,0)
+				}
+				else if(count==8){
+					sillhouette = rand_2(true,sillScene,0)
+					currentObject = rand_2(false,scene,0)
+				}
+				else if(count>10){
+					final_time = document.getElementById("timer").innerHTML;
+					console.log("FT:"+final_time);
+					window.location.href="highscore.html"
+				}
+				render();
 			}
-			else if(count==3){
-				sillhouette = draw_cube_cluster(true,sillScene,0)
-				currentObject = draw_cube_cluster(false,scene,0)
-			}
-			else if(count==4){
-				sillhouette = draw_cross(true,sillScene,0)
-				currentObject = draw_cross(false,scene,0)
-			}
-			else if(count==5){
-				sillhouette = draw_stairs(true,sillScene,0)
-				currentObject = draw_stairs(false,scene,0)
-			}
-			else if(count==6){
-				sillhouette = draw_tetris_z1(true,sillScene,0)
-				currentObject = draw_tetris_z1(false,scene,0)
-			}
-			else if(count==7){
-				sillhouette = rand_1(true,sillScene,0)
-				currentObject = rand_1(false,scene,0)
-			}
-			else if(count==8){
-				sillhouette = rand_2(true,sillScene,0)
-				currentObject = rand_2(false,scene,0)
-			}
-			else if(count>10){
-				final_time = document.getElementById("timer").innerHTML;
-				console.log("FT:"+final_time);
-				window.location.href="highscore.html"
-			}
-			render();
 		}
 		function showOverlay(){
 			if(count==1){
