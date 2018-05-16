@@ -163,10 +163,17 @@
 
 		function addHighScore(score)
 		{
+			var time = score.split(",");
+			var seconds = time[0];
+			var milli = time[1];
 			for (var i = 0; i < 5; i += 1)
 			{
-				if (parseInt(score) < parseInt(getLocal(i)))
+				var curr_time = getLocal(i).split(",");
+				var currr_sec = curr_time[0];
+				var curr_milli = curr_time[1];
+				if (parseInt(seconds) < parseInt(currr_sec) && parseInt(milli) < parseInt(curr_milli))
 				{
+					
 					console.log("setting " + i + " : " + score);
 					setLocal(i, score);
 					break;
@@ -929,7 +936,7 @@
 				currentObject = rand_4(false,scene,0);
 			}
 			else if(count>10){
-				final_time = document.getElementById("milliseconds").innerHTML;
+				final_time = document.getElementById("seconds").innerHTML + "," + document.getElementById("milliseconds").innerHTML;
 				console.log("FT:"+final_time);
 				addHighScore(final_time);
 				window.location.href="highscore.html"

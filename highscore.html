@@ -29,9 +29,15 @@
 			{
 				for (var i = 0; i < 5; i += 1)
 				{
-					if (getLocal(i) == '99999999') document.getElementById(i).innerText = 'NONE';
+					if (getLocal(i) == '99999999,999') document.getElementById(i).innerText = 'NONE';
 					
-					else document.getElementById(i).innerText = getLocal(i);
+					else 
+					{
+						var time = getLocal(i).split(",");
+						var sec = time[0];
+						var milli = time[1];
+						document.getElementById(i).innerText = sec + "." + milli;
+					}
 				}
 			});
 			
