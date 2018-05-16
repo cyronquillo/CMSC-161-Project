@@ -17,15 +17,18 @@
 		</div>
 		<div class="South">
 			<button onclick="checkAnswer()"> Check </button>
-			<button> Pass </button>
 			<button> Show Overlay </button>
 		</div>
 	</body>
 	<script>
 		/*Calls Timer Function on load*/
 		window.onload = function(){
-			timer(0);
+			init_timer();
 		};
+	
+		var now = new Date();
+		var mil = now.getMilliseconds();
+		var sec = now.getSeconds();
 		var rotateContainer = document.getElementById("rotateCanvas");
 		var sillContainer = document.getElementById("sillhouetteCanvas");
 		var sillCanvasDimension = 400;
@@ -138,14 +141,19 @@
 				return angle * (180 / Math.PI);
 			}
 		/*Function for Timer*/
-		function timer(sec){
-			var timeout;		
-			var timer = setInterval(function(){
-				if(sec>0){
-					document.getElementById("timer").innerHTML = sec/1000;
-				}
-				sec +=4;
-			});
+		function init_timer(){
+			console.log(mil+" "+sec);
+			//updateTimer(mil,sec);
+			window.setInterval("updateTimer()",1);
+		}
+		function updateTimer(){
+			var now = new Date();
+			var mil1 = now.getMilliseconds();
+			var sec1 = now.getSeconds();
+			fmil = Math.abs(mil1-mil);
+			fsec = Math.abs(sec1-sec);
+			console.log(mil1+"."+mil);
+			document.getElementById("timer").innerHTML = fsec+"."+fmil;
 		}
 		/*DRAW TORUS KNOT*/
 		function draw_torus_knot(is_silhouette,scene){
