@@ -43,23 +43,23 @@
 		renderer.setSize(900, 500);
 		document.body.appendChild(sillRenderer.domElement);
 		document.body.appendChild(renderer.domElement);
-	
+
 
 		var spotLight = new THREE.SpotLight(0xffffff)
 		spotLight.position.set(-0, 30, 60)
 		spotLight.intensity = 0.6
-		scene.add(spotLight)	
-		
+		scene.add(spotLight)
+
 		sillhouette = half_ring(true,sillScene)
         currentObject = half_ring(false,scene)
-		
+
 		sillContainer.appendChild(sillRenderer.domElement);
 		rotateContainer.appendChild(renderer.domElement);
-			
+
 		camera.position.z = 5;
-	
+
 		sillCamera.position.z = 5;
-		
+
 		var isDragging = false;
 		var previousMousePosition = {
 			x: 0,
@@ -74,7 +74,7 @@
 					x: e.offsetX - previousMousePosition.x,
 					y: e.offsetY - previousMousePosition.y
 				};
-				
+
 				if (isDragging) {
 					var deltaRotationQuaternion = new three.Quaternion()
 						.setFromEuler(new three.Euler(
@@ -99,6 +99,7 @@
 			});
 			$(document).on('mouseup', function (e) {
 				isDragging = false;
+
 			});
 			// shim layer with setTimeout fallback
 			window.requestAnimFrame = (function () {
@@ -114,7 +115,7 @@
 			function radToDeg(rad){
 				return rad*180/Math.PI
 			}
-			
+
 			function update(dt, t) {
 				setTimeout(function () {
 					var currTime = new Date().getTime() / 1000;
@@ -139,7 +140,7 @@
 			}
 		/*Function for Timer*/
 		function timer(sec){
-			var timeout;		
+			var timeout;
 			var timer = setInterval(function(){
 				if(sec>0){
 					document.getElementById("timer").innerHTML = sec/1000;
@@ -160,9 +161,11 @@
 
 			if (is_silhouette)
 			{
-				torusKnot.rotation.z = 0;
-				torusKnot.rotation.x = 2.5;
-				torusKnot.rotation.y = 2.0;
+				// torusKnot.rotation.x = 2.5;
+				// torusKnot.rotation.y = 2.0;
+
+				torusKnot.rotation.x = 6.0;
+				torusKnot.rotation.y = 2.5;
 			}
 			var magnitude = Math.pow(Math.pow(torusKnot.rotation.y,2) + Math.pow(torusKnot.rotation.x,2), 0.5)
 			console.log(magnitude)
@@ -184,10 +187,13 @@
 			var mesh = new THREE.Mesh( geometry, material );
 			mesh.rotation.x = 3.5;
 			mesh.rotation.y = 1.0;
-			if (!is_silhouette)
+			if (is_silhouette)
 			{
-				mesh.rotation.x = 2.5;
-				mesh.rotation.y = 1.0;
+				// mesh.rotation.x = 2.5;
+				// mesh.rotation.y = 1.0;
+
+				mesh.rotation.x = 6.0;
+				mesh.rotation.y = 4;
 			}
 			mesh.position.set(0,0,-30);
 			scene.add( mesh );
@@ -212,7 +218,7 @@
 
 				// Cube
 				var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-				
+
 				var cube = new THREE.Mesh( geometry, material );
 				cube.position.x = 0.15320661216709408 * v1 - v2;
 				cube.position.y = 0.07876428314069295 * v1 - v2;
@@ -284,6 +290,15 @@
 				group.add( cube );
 
 				var mesh = new THREE.Mesh( group, material );
+
+				if(is_silhouette){
+					group.rotation.x = 1.5
+					group.rotation.y = 8
+
+					// group.rotation.x = 5
+					// group.rotation.y = 2
+				}
+
 				scene.add(group);
 				return group;
 			}
@@ -340,6 +355,17 @@
 				group.add( cube );
 
 				var mesh = new THREE.Mesh( group, material );
+
+
+				if(is_silhouette){
+					// group.rotation.x = 1.5
+					// group.rotation.y = 8
+					// group.rotation.z = 0
+
+					group.rotation.x = 5
+					group.rotation.y = 3
+				}
+
 				scene.add(group);
 				return group;
 			}
@@ -360,107 +386,111 @@
 				var geometry = new THREE.BoxGeometry( 1, 1, 1 );
 
 				var cube = new THREE.Mesh( geometry, material );
+				cube.position.x = -2;
+				cube.position.y = 0-2;
+				cube.position.z = 0;
+				group.add( cube );
+
+				cube = new THREE.Mesh( geometry, material );
+				cube.position.x = -1;
+				cube.position.y = 0-2;
+				cube.position.z = 0;
+				group.add( cube );
+
+				cube = new THREE.Mesh( geometry, material );
 				cube.position.x = 0;
-				cube.position.y = 0;
+				cube.position.y = 0-2;
 				cube.position.z = 0;
 				group.add( cube );
 
 				cube = new THREE.Mesh( geometry, material );
 				cube.position.x = 1;
-				cube.position.y = 0;
+				cube.position.y = 0-2;
 				cube.position.z = 0;
 				group.add( cube );
 
 				cube = new THREE.Mesh( geometry, material );
 				cube.position.x = 2;
-				cube.position.y = 0;
+				cube.position.y = 0-2;
+				cube.position.z = 0;
+				group.add( cube );
+
+
+				cube = new THREE.Mesh( geometry, material );
+				cube.position.x = -2;
+				cube.position.y = 1-2;
 				cube.position.z = 0;
 				group.add( cube );
 
 				cube = new THREE.Mesh( geometry, material );
-				cube.position.x = 3;
+				cube.position.x = -1;
 				cube.position.y = 0;
-				cube.position.z = 0;
+				cube.position.z = -2;
 				group.add( cube );
-
-				cube = new THREE.Mesh( geometry, material );
-				cube.position.x = 4;
-				cube.position.y = 0;
-				cube.position.z = 0;
-				group.add( cube );
-
 
 				cube = new THREE.Mesh( geometry, material );
 				cube.position.x = 0;
-				cube.position.y = 1;
-				cube.position.z = 0;
-				group.add( cube );
-
-				cube = new THREE.Mesh( geometry, material );
-				cube.position.x = 2;
-				cube.position.y = 0;
-				cube.position.z = -4;
-				group.add( cube );
-
-				cube = new THREE.Mesh( geometry, material );
-				cube.position.x = 2;
-				cube.position.y = 1;
-				cube.position.z = 0;
-				group.add( cube );
-
-				cube = new THREE.Mesh( geometry, material );
-				cube.position.x = 3;
-				cube.position.y = 1;
-				cube.position.z = 0;
-				group.add( cube );
-
-
-				cube = new THREE.Mesh( geometry, material );
-				cube.position.x = 0;
-				cube.position.y = 2;
+				cube.position.y = 1-2;
 				cube.position.z = 0;
 				group.add( cube );
 
 				cube = new THREE.Mesh( geometry, material );
 				cube.position.x = 1;
-				cube.position.y = 2;
+				cube.position.y = 1-2;
+				cube.position.z = 0;
+				group.add( cube );
+
+
+				cube = new THREE.Mesh( geometry, material );
+				cube.position.x = -2;
+				cube.position.y = 2-2;
 				cube.position.z = 0;
 				group.add( cube );
 
 				cube = new THREE.Mesh( geometry, material );
-				cube.position.x = 2;
-				cube.position.y = 2;
-				cube.position.z = 0;
-				group.add( cube );
-
-				cube = new THREE.Mesh( geometry, material );
-				cube.position.x = 0;
-				cube.position.y = 3;
-				cube.position.z = 0;
-				group.add( cube );
-
-				cube = new THREE.Mesh( geometry, material );
-				cube.position.x = 1;
-				cube.position.y = 3;
+				cube.position.x = -1;
+				cube.position.y = 2-2;
 				cube.position.z = 0;
 				group.add( cube );
 
 				cube = new THREE.Mesh( geometry, material );
 				cube.position.x = 0;
-				cube.position.y = 4;
+				cube.position.y = 2-2;
+				cube.position.z = 0;
+				group.add( cube );
+
+				cube = new THREE.Mesh( geometry, material );
+				cube.position.x = -2;
+				cube.position.y = 3-2;
+				cube.position.z = 0;
+				group.add( cube );
+
+				cube = new THREE.Mesh( geometry, material );
+				cube.position.x = -1;
+				cube.position.y = 3-2;
+				cube.position.z = 0;
+				group.add( cube );
+
+				cube = new THREE.Mesh( geometry, material );
+				cube.position.x = -2;
+				cube.position.y = 4-2;
 				cube.position.z = 0;
 				group.add( cube );
 
 				var mesh = new THREE.Mesh( group, material );
 
-				group.rotation.z = 0.4;
-				group.rotation.x = 2.5;
-				group.rotation.y = 2.0;
-	
-				group.position.set(2,0.5,-3);
+				if(is_silhouette){
+					// group.rotation.x = -1;
+					// group.rotation.y = 1.9;
+					// group.rotation.y = 1;
+
+					group.rotation.y = -1;
+				}
+
+				group.position.set(1,0.5,-3);
 				scene.add(group);
 				return group;
-			}
+		}
 		/*DRAW TETRIS*/
 		function draw_tetris_z1 (is_silhouette,scene)
 			{
@@ -509,6 +539,16 @@
 				group.add( cube );
 
 				var mesh = new THREE.Mesh( group, material );
+
+
+				if(is_silhouette){
+					// group.rotation.x = 0;
+					// group.rotation.y = 1.67;
+
+					group.rotation.x = 1.67;
+					group.rotation.y = 5.33;
+				}
+
 				scene.add(group);
 				return group;
 			}
@@ -548,7 +588,7 @@
                 cube.position.y = 0.1;
                 cube.position.z = 0;
                 group.add( cube );
-                
+
                 var cube = new THREE.Mesh( geometry, material );
                 cube.position.x = 0.5;
                 cube.position.y = 1.5;
@@ -573,6 +613,10 @@
                 {
                     group.rotation.x = 0.5;
                     group.rotation.y = 1.5;
+
+
+                    group.rotation.x = 1.5;
+                    group.rotation.y = 0.5;
                 }
                 scene.add(group);
 
@@ -588,45 +632,107 @@
 
                 var group = new THREE.Group();
 
-                var geometry = new THREE.SphereGeometry( 5, 32, 32 );
+                var geometry = new THREE.CubeGeometry( 1, 1, 1 );
                 var material = new THREE.MeshPhongMaterial( {color: 0xffff00} );
                 if (is_silhouette) var material = new THREE.MeshBasicMaterial( { color: 0x0000ff } );
-                
-                var sphere = new THREE.Mesh( geometry, material );
-                sphere.position.x = 2.5;
-                sphere.position.y = -3.5;
-                sphere.position.z = 0;
-                group.add( sphere );
 
-                var sphere = new THREE.Mesh( geometry, material );
-                sphere.position.x = 0.5;
-                sphere.position.y = -3.5;
-                sphere.position.z = 0;
-                group.add( sphere );
-                
-                var sphere = new THREE.Mesh( geometry, material );
-                sphere.position.x = 2.5;
-                sphere.position.y = 1.5;
-                sphere.position.z = 0.0;
-                group.add( sphere );
+				var cube = new THREE.Mesh( geometry, material );
+				cube.position.x = -2;
+				cube.position.y = -2;
+				cube.position.z = 0;
+				group.add( cube );
 
+				var cube = new THREE.Mesh( geometry, material );
+				cube.position.x = -1;
+				cube.position.y = -2;
+				cube.position.z = 0;
+				group.add( cube );
 
-                var sphere = new THREE.Mesh( geometry, material );
-                sphere.position.x = -2.5;
-                sphere.position.y = 1.5;
-                sphere.position.z = 0;
-                group.add( sphere );
+				var cube = new THREE.Mesh( geometry, material );
+				cube.position.x = 0;
+				cube.position.y = -2;
+				cube.position.z = 0;
+				group.add( cube );
+
+				var cube = new THREE.Mesh( geometry, material );
+				cube.position.x = 1;
+				cube.position.y = -2;
+				cube.position.z = 0;
+				group.add( cube );
+
+				var cube = new THREE.Mesh( geometry, material );
+				cube.position.x = 2;
+				cube.position.y = -2;
+				cube.position.z = 0;
+				group.add( cube );
+
+				var cube = new THREE.Mesh( geometry, material );
+				cube.position.x = 2;
+				cube.position.y = -1;
+				cube.position.z = 0;
+				group.add( cube );
+
+				var cube = new THREE.Mesh( geometry, material );
+				cube.position.x = 0;
+				cube.position.y = -2;
+				cube.position.z = -1;
+				group.add( cube );
+
+				var cube = new THREE.Mesh( geometry, material );
+				cube.position.x = 0;
+				cube.position.y = -2;
+				cube.position.z = -2;
+				group.add( cube );
+
+				var cube = new THREE.Mesh( geometry, material );
+				cube.position.x = 0;
+				cube.position.y = -1;
+				cube.position.z = -2;
+				group.add( cube );
+
+				var cube = new THREE.Mesh( geometry, material );
+				cube.position.x = -2;
+				cube.position.y = -3;
+				cube.position.z = 0;
+				group.add( cube );
+                // var sphere = new THREE.Mesh( geometry, material );
+                // sphere.position.x = 2.5;
+                // sphere.position.y = -3.5;
+                // sphere.position.z = 0;
+                // group.add( sphere );
+				//
+                // var sphere = new THREE.Mesh( geometry, material );
+                // sphere.position.x = 0.5;
+                // sphere.position.y = -3.5;
+                // sphere.position.z = 0;
+                // group.add( sphere );
+				//
+                // var sphere = new THREE.Mesh( geometry, material );
+                // sphere.position.x = 2.5;
+                // sphere.position.y = 1.5;
+                // sphere.position.z = 0.0;
+                // group.add( sphere );
+				//
+				//
+                // var sphere = new THREE.Mesh( geometry, material );
+                // sphere.position.x = -2.5;
+                // sphere.position.y = 1.5;
+                // sphere.position.z = 0;
+                // group.add( sphere );
 
                 var mesh = new THREE.Mesh( group, material );
 
                 if (is_silhouette)
                 {
-                    group.rotation.x = 0.5;
-                    group.rotation.y = 1.5;
+                    // group.rotation.x = 1.4;
+                    // group.rotation.y = 1;
+
+                    group.rotation.x = 6;
+                    group.rotation.y = 4;
                 }
                 scene.add(group);
 
-                group.position.set(3, 0, -15)
+                group.position.set(-1, 0, -3)
 				return group;
             }
 		/*Function for checking*/
@@ -640,11 +746,11 @@
 			}
 			sillScene.remove(sillScene.children[0]); //clear canvas
 			var spotLight = new THREE.SpotLight(0xffffff)
-			spotLight.position.set(-0, 30, 60)
+			spotLight.position.set(0, 30, 60)
 			spotLight.intensity = 0.6
 			scene.add(spotLight)
 
-			if(count==2){					
+			if(count==2){
 				sillhouette = draw_torus_knot(true,sillScene)
 				currentObject = draw_torus_knot(false,scene)
 			}
