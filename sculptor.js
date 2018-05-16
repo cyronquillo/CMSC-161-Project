@@ -1,27 +1,3 @@
-/*DRAW HALF RING*/
-function half_ring (is_silhouette,scene){
-    var geometry = new THREE.RingGeometry( 18.7, 10, 8, 16, 4, 3.2 );
-    if (!is_silhouette){
-        var texture = new THREE.TextureLoader().load("abstract_texture2.jpg");
-        var material = new THREE.MeshBasicMaterial( { map:texture, side: THREE.DoubleSide } );
-    }
-    else var material = new THREE.MeshBasicMaterial( { color: 0xff0000  } );
-
-    var mesh = new THREE.Mesh( geometry, material );
-    mesh.rotation.x = 3.5;
-    mesh.rotation.y = 1.0;
-    if (is_silhouette)
-    {
-        // mesh.rotation.x = 2.5;
-        // mesh.rotation.y = 1.0;
-
-        mesh.rotation.x = 6.0;
-        mesh.rotation.y = 4;
-    }
-    mesh.position.set(0,0,-30);
-    scene.add( mesh );
-    return mesh;
-}
 /*DRAW CUBE CLUSTER*/
 function draw_cube_cluster (is_silhouette,scene)
     {
@@ -510,32 +486,32 @@ function draw_tetris_z1 (is_silhouette,scene)
         return group;
     }
 
-    function rand_3 (is_silhouette,scene)
-    {
-        var group = new THREE.Group();
-
-        var geometry = new THREE.CubeGeometry( 1, 1, 1 );
-        var material = new THREE.MeshPhongMaterial( {color: 0xffff00} );
-        if (is_silhouette) var material = new THREE.MeshBasicMaterial( { color: 0x0000ff } );
-
-        var cube = new THREE.Mesh( geometry, material );
-        cube.position.x = -2;
-        cube.position.y = -2;
-        cube.position.z = 0;
-        group.add( cube );
-
-        var mesh = new THREE.Mesh( group, material );
-
-        if (is_silhouette)
-        {
-            // group.rotation.x = 1.4;
-            // group.rotation.y = 1;
-
-            // group.rotation.x = 6;
-            // group.rotation.y = 4;
-        }
-        scene.add(group);
-
-        group.position.set(-1, 0, -3)
-        return group;
-    }
+    // function rand_3 (is_silhouette,scene)
+    // {
+    //     var group = new THREE.Group();
+    //
+    //     var geometry = new THREE.CubeGeometry( 1, 1, 1 );
+    //     var material = new THREE.MeshPhongMaterial( {color: 0xffff00} );
+    //     if (is_silhouette) var material = new THREE.MeshBasicMaterial( { color: 0x0000ff } );
+    //
+    //     var cube = new THREE.Mesh( geometry, material );
+    //     cube.position.x = -2;
+    //     cube.position.y = -2;
+    //     cube.position.z = 0;
+    //     group.add( cube );
+    //
+    //     var mesh = new THREE.Mesh( group, material );
+    //
+    //     if (is_silhouette)
+    //     {
+    //         // group.rotation.x = 1.4;
+    //         // group.rotation.y = 1;
+    //
+    //         // group.rotation.x = 6;
+    //         // group.rotation.y = 4;
+    //     }
+    //     scene.add(group);
+    //
+    //     group.position.set(-1, 0, -3)
+    //     return group;
+    // }
