@@ -172,13 +172,16 @@
 			for (var i = 0; i < 5; i += 1)
 			{
 				var curr_time = getLocal(i).split(",");
-				var currr_sec = curr_time[0];
+				var curr_sec = curr_time[0];
 				var curr_milli = curr_time[1];
-				if (parseInt(seconds) < parseInt(currr_sec) && parseInt(milli) < parseInt(curr_milli))
+				if (parseInt(seconds) < parseInt(curr_sec) || (parseInt(seconds) == parseInt(curr_sec) && parseInt(milli) < parseInt(curr_milli)))
 				{
 					
 					console.log("setting " + i + " : " + score);
+					seconds = curr_sec;
+					milli = curr_milli;
 					setLocal(i, score);
+					if (i + 1 < 5 && score != '99999999, 999') setLocal(i+1, curr_sec+","+curr_milli);
 					break;
 				}
 			}
