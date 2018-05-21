@@ -1,0 +1,37 @@
+@import url('https://fonts.googleapis.com/css?family=Bungee+Shade|Rubik:400,900');
+body{
+	background-color:black;
+}
+p{
+	font-family:'Bungee Shade', sans-serif;
+	color: white;
+	text-align: center;
+	font-weight:bold;
+	font-size: 72px;
+	position: relative;
+	top: 1em;
+}
+
+.grid{}
+button{
+	text-align: center;
+}
+
+.column{
+	color: white;
+	text-align: center;
+	font-family:'Rubik', sans-serif;
+	font-size: 24px;
+}
+
+.one_ .column{
+	color: gold;
+}
+
+.two_ .column{
+	color: silver;
+}
+
+.three_ .column{
+	color: brown;
+}
