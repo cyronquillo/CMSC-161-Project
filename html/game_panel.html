@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title> GamePanel </title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/87/three.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.js"></script>
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.1/dist/semantic.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/game_panel.css">
+		<meta charset="utf-8" />
+	</head>
+	<body>
+		<div class="East">
+			<p id = "timer" class="EastComponents"><label id="seconds">00</label>.<label id="milliseconds">00</label></p>
+			<div id = "sillhouetteCanvas" class="gameCanvas EastComponents"> </div>
+		</div>
+		<div class="Center" id="rotateCanvas">
+		</div>
+		<div class="South">
+			<button onclick="checkAnswer()"> Check </button>
+			<button onclick="showOverlay()"> Show Overlay </button>
+			<button onclick="removeOverlay()"> Remove Overlay </button>
+		</div>
+	</body>
+	<script src="../js/game_panel.js"></script>
+</html>
