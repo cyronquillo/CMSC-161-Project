@@ -2,38 +2,23 @@
 <html>
     <head>
         <title>:: ROTOCOPY ::</title>
+        <!-- semantic ui for application frontend design -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.1/dist/semantic.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.1/dist/semantic.min.js"></script>
+
+        <!-- three js library for easy of 3d rendering -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/87/three.js"></script>
+        
         <script
-          src="https://code.jquery.com/jquery-3.1.1.min.js"
-          integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
-          crossorigin="anonymous"></script>
-          <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.1/dist/semantic.min.js"></script>
+            src="https://code.jquery.com/jquery-3.1.1.min.js"
+            integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+            crossorigin="anonymous">
+        </script>
         <link rel="stylesheet" href="../css/index.css">
+		<meta charset="utf-8" />        
     </head>
     <body onload="animate();">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/87/three.js"></script>
-        <script>
-            function setLocal(key, value)
-            {
-                localStorage.setItem(key, value);
-            }
-
-            function getLocal(key)
-            {
-                return localStorage.getItem(key);
-            }
-            
-            if (getLocal('init') == null)
-            {
-                // initialization of scores
-                for (var i = 0; i < 5; i += 1)
-                {
-                    setLocal(i, '99999999,999');
-                }
-
-                setLocal('init') == 'true';
-            }
-        </script>
+        <!-- displays the main menu of the game -->
         <div id="title" class="menu">
             ROTOCOPY
         </div>

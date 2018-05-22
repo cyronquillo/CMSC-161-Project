@@ -1,3 +1,22 @@
+//gets the scores stored in the local storage
+function setLocal(key, value) {
+    localStorage.setItem(key, value);
+}
+
+function getLocal(key) {
+    return localStorage.getItem(key);
+}
+
+if (getLocal('init') == null) {
+    // initialization of scores
+    for (var i = 0; i < 5; i += 1) {
+        setLocal(i, '99999999,999');
+    }
+
+    setLocal('init') == 'true';
+}
+
+// displays the rotating cube in the main menu
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 40, window.innerWidth/window.innerHeight, 0.1, 1000 );
 
@@ -36,21 +55,3 @@ var cube2 = new THREE.Mesh( geometry2, material2 );
 scene2.add( cube2 );
 
 camera2.position.z = 5;
-
-var animate2 = function () {
-    requestAnimationFrame( animate2 );
-
-    cube2.rotation.x += 0.01;
-    cube2.rotation.y += 0.01;
-
-    renderer.render(scene2, camera2);
-};
-
-var animate3 = function () {
-    requestAnimationFrame( animate );
-
-    cube2.rotation.x += 0.01;
-    cube2.rotation.y += 0.01;
-
-    renderer.render(scene, camera);
-};

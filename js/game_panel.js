@@ -1,7 +1,9 @@
 /*Calls Timer Function on load*/
+// runs the time once the page has loaded
 window.onload = function () {
     setTime();
 };
+
 var millisecondsLabel = document.getElementById("milliseconds");
 var secondsLabel = document.getElementById("seconds");
 setInterval(setTime, 0);
@@ -20,7 +22,7 @@ var count = 1;
 var sillRenderer = new three.WebGLRenderer();
 var renderer = new three.WebGLRenderer();
 var local = localStorage;
-var username = "user";
+
 sillRenderer.setSize(400, 400);
 renderer.setSize(900, 500);
 document.body.appendChild(sillRenderer.domElement);
@@ -35,56 +37,56 @@ scene.add(spotLight)
 sillhouette = half_ring(true, sillScene, 0)
 currentObject = half_ring(false, scene, 0)
 
-console.log(sillhouette.mesh.rotation.x, sillhouette.mesh.rotation.y)
-console.log(currentObject.mesh.rotation.x, currentObject.mesh.rotation.y)
+
 
 sillContainer.appendChild(sillRenderer.domElement);
 rotateContainer.appendChild(renderer.domElement);
 
+// sets the z coordinate of the sillhouette object and the rotating object 
 camera.position.z = 5;
-
 sillCamera.position.z = 5;
 
+
 var isDragging = false;
+
+// initial rotation angle of the object
 var previousMousePosition = {
     x: 0,
     y: 0
 };
+
+// jquery snippet for rotating the object using the mouse
 $(renderer.domElement).on('mousedown', function (e) {
     isDragging = true;
-})
-    .on('mousemove', function (e) {
-        // console.log(e);
-        var deltaMove = {
-            x: e.offsetX - previousMousePosition.x,
-            y: e.offsetY - previousMousePosition.y
-        };
+}).on('mousemove', function (e) {
+    // the basis of the object rotation is the previous position of the mouse
+    var deltaMove = {
+        x: e.offsetX - previousMousePosition.x,
+        y: e.offsetY - previousMousePosition.y
+    };
 
-        if (isDragging) {
-            var deltaRotationQuaternion = new three.Quaternion()
-                .setFromEuler(new three.Euler(
-                    toRadians(deltaMove.y),
-                    toRadians(deltaMove.x),
-                    0,
-                    'XYZ'
-                )).normalize();
-            currentObject.mesh.quaternion.multiplyQuaternions(deltaRotationQuaternion, currentObject.mesh.quaternion);
+    if (isDragging) {
+        var deltaRotationQuaternion = new three.Quaternion()
+            .setFromEuler(new three.Euler(
+                toRadians(deltaMove.y),
+                toRadians(deltaMove.x),
+                0,
+                'XYZ'
+            )).normalize();
+        currentObject.mesh.quaternion.multiplyQuaternions(deltaRotationQuaternion, currentObject.mesh.quaternion);
 
-            var x = currentObject.mesh.rotation.x - sillhouette.mesh.rotation.x
-            var y = currentObject.mesh.rotation.y - sillhouette.mesh.rotation.y
+    }
+    previousMousePosition = {
+        x: e.offsetX,
+        y: e.offsetY
+    };
+});
 
-            var dist = Math.sqrt(x * x + y * y);
-            console.log(currentObject.mesh.rotation.x, currentObject.mesh.rotation.y)
-            console.log("dist: " + dist)
-        }
-        previousMousePosition = {
-            x: e.offsetX,
-            y: e.offsetY
-        };
-    });
+// keylistener when the mouse is released
 $(document).on('mouseup', function (e) {
     isDragging = false;
 });
+
 // shim layer with setTimeout fallback
 window.requestAnimFrame = (function () {
     return window.requestAnimationFrame ||
@@ -94,12 +96,22 @@ window.requestAnimFrame = (function () {
             window.setTimeout(callback, 1000 / 60);
         };
 })();
-var lastFrameTime = new Date().getTime() / 1000;
-var totalGameTime = 0;
-function radToDeg(rad) {
-    return rad * 180 / Math.PI
+
+// renders the sillhouette scene and the main game canvase scene
+function render() {
+    renderer.render(scene, camera);
+    sillRenderer.render(sillScene, sillCamera)
+    requestAnimFrame(render);
+}
+render();
+
+function toRadians(angle) {
+    return angle * (Math.PI / 180);
 }
 
+//function for displaying the time
+var lastFrameTime = new Date().getTime() / 1000;
+var totalGameTime = 0;
 function update(dt, t) {
     setTimeout(function () {
         var currTime = new Date().getTime() / 1000;
@@ -109,19 +121,8 @@ function update(dt, t) {
         lastFrameTime = currTime;
     }, 0);
 }
-function render() {
-    renderer.render(scene, camera);
-    sillRenderer.render(sillScene, sillCamera)
-    requestAnimFrame(render);
-}
-render();
 update(0, totalGameTime);
-function toRadians(angle) {
-    return angle * (Math.PI / 180);
-}
-function toDegrees(angle) {
-    return angle * (180 / Math.PI);
-}
+
 /*Function for Timer*/
 function setTime() {
     totalSeconds += 5;
@@ -138,6 +139,7 @@ function getLocal(key) {
 }
 
 
+// function called when the player reached and finished the 10th stage of the game
 function addHighScore(score) {
     var time = score.split(",");
     var seconds = time[0];
@@ -147,7 +149,6 @@ function addHighScore(score) {
         var curr_sec = curr_time[0];
         var curr_milli = curr_time[1];
         if (parseInt(seconds) < parseInt(curr_sec) || (parseInt(seconds) == parseInt(curr_sec) && parseInt(milli) < parseInt(curr_milli))) {
-
             console.log("setting " + i + " : " + score);
             seconds = curr_sec;
             milli = curr_milli;
@@ -158,6 +159,7 @@ function addHighScore(score) {
     }
 }
 
+// function for formatting the time elapsed being displayed
 function pad(val) {
     var valString = val + "";
     if (valString.length < 2) {
@@ -166,7 +168,40 @@ function pad(val) {
         return valString;
     }
 }
+
+/*DRAW HALF RING*/
+// draws the first object
+function half_ring(is_silhouette, scene, i) {
+    var geometry = new THREE.RingGeometry(18.7, 10, 8, 16, 4, 3.2);
+    if (!is_silhouette) {
+        var texture = new THREE.TextureLoader().load("imgs/abstract_texture2.jpg");
+        var material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
+    }
+    else if (is_silhouette && i == 0) var material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+    else var material = new THREE.MeshBasicMaterial({ color: 0xff0000, transparent: true, opacity: 0.5 });
+
+    var mesh = new THREE.Mesh(geometry, material);
+    mesh.rotation.x = 3.5;
+    mesh.rotation.y = 1.0;
+    if (!is_silhouette) {
+        mesh.rotation.x = 6.0;
+        mesh.rotation.y = 4;
+    }
+    mesh.position.set(0, 0, -30);
+    scene.add(mesh);
+    return {
+        mesh: mesh,
+        solutions: [
+            [3.5, 1],
+            [-0.75, -0.83],
+            [-3.12, 1],
+            [0.36, -0.97]
+        ]
+    }
+}
+
 /*DRAW TORUS KNOT*/
+// draws the 2nd object
 function draw_torus_knot(is_silhouette, scene, i) {
     var geometry = new THREE.TorusKnotGeometry(10, 3, 100, 35);
     var material;
@@ -200,36 +235,9 @@ function draw_torus_knot(is_silhouette, scene, i) {
         ],
     };
 }
-/*DRAW HALF RING*/
-function half_ring(is_silhouette, scene, i) {
-    var geometry = new THREE.RingGeometry(18.7, 10, 8, 16, 4, 3.2);
-    if (!is_silhouette) {
-        var texture = new THREE.TextureLoader().load("imgs/abstract_texture2.jpg");
-        var material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
-    }
-    else if (is_silhouette && i == 0) var material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-    else var material = new THREE.MeshBasicMaterial({ color: 0xff0000, transparent: true, opacity: 0.5 });
 
-    var mesh = new THREE.Mesh(geometry, material);
-    mesh.rotation.x = 3.5;
-    mesh.rotation.y = 1.0;
-    if (!is_silhouette) {
-        mesh.rotation.x = 6.0;
-        mesh.rotation.y = 4;
-    }
-    mesh.position.set(0, 0, -30);
-    scene.add(mesh);
-    return {
-        mesh: mesh,
-        solutions: [
-            [3.5, 1],
-            [-0.75, -0.83],
-            [-3.12, 1],
-            [0.36, -0.97]
-        ]
-    }
-}
 /*DRAW CUBE CLUSTER*/
+// draws the 3rd object of the game
 function draw_cube_cluster(is_silhouette, scene, i) {
     const v1 = 2;
     const v2 = 1;
@@ -338,7 +346,9 @@ function draw_cube_cluster(is_silhouette, scene, i) {
         ]
     }
 }
+
 /*DRAW CROSS*/
+// draws the 4th object of the game
 function draw_cross(is_silhouette, scene, i) {
     const v1 = 2;
     const v2 = 1;
@@ -410,7 +420,9 @@ function draw_cross(is_silhouette, scene, i) {
         ]
     }
 }
+
 /*DRAW STAIRS*/
+//draws the 5th object of the game
 function draw_stairs(is_silhouette, scene, i) {
     const v1 = 2;
     const v2 = 1;
@@ -539,7 +551,9 @@ function draw_stairs(is_silhouette, scene, i) {
         ]
     }
 }
+
 /*DRAW TETRIS*/
+// draws the 6th object of the game
 function draw_tetris_z1(is_silhouette, scene, i) {
     const v1 = 2;
     const v2 = 1;
@@ -600,6 +614,9 @@ function draw_tetris_z1(is_silhouette, scene, i) {
         ]
     };
 }
+
+
+//function for rendering the 7th object of the game
 function rand_1(is_silhouette, scene, i) {
     const v1 = 2;
     const v2 = 1;
@@ -676,6 +693,7 @@ function rand_1(is_silhouette, scene, i) {
     }
 }
 
+// function for rendering the 8th object of the game
 function rand_2(is_silhouette, scene, i) {
     var group = new THREE.Group();
 
@@ -764,7 +782,7 @@ function rand_2(is_silhouette, scene, i) {
     }
 }
 
-
+// function for rendering the 9th object of the game
 function rand_3(is_silhouette, scene, i) {
     var group = new THREE.Group();
 
@@ -851,6 +869,7 @@ function rand_3(is_silhouette, scene, i) {
     }
 }
 
+// function for rendering the 10th object of the game
 function rand_4(is_silhouette, scene, i) {
     var group = new THREE.Group();
 
@@ -939,18 +958,25 @@ function rand_4(is_silhouette, scene, i) {
         ]
     }
 }
-/*Function for checking*/
+
+// function for checking
 function check_threshold(obj) {
     var sols = obj.solutions;
     for (var i = 0; i < sols.length; i++) {
         var x = obj.mesh.rotation.x - sols[i][0];
         var y = obj.mesh.rotation.y - sols[i][1];
+
+        // gets the distance between the rotation coordinates of the original
+        // from the solution. assigns a threshold of 1.00. if the distance is
+        // below 1.00, the object matches the sillhouette
         var dist = Math.sqrt(x * x + y * y);
         if (dist <= 1) return true;
     }
     return false;
 }
-/*Function for checking*/
+// button function for checking if the shape matches the sillhouette
+// proceeds to the next stage if it does
+// if not, adds 5 secs to time penalty and presents an alert saying the object doesn't match the sillhouette
 function checkAnswer() {
     var boo = check_threshold(currentObject);
     if (!boo) {
@@ -1014,6 +1040,9 @@ function checkAnswer() {
         }
     }
 }
+
+// displays the overlay or hint in the playing canvas
+// adds 10 secs as penalty to the total time
 function showOverlay() {
     totalSeconds += 10000
     if (count == 1) {
@@ -1047,6 +1076,8 @@ function showOverlay() {
         if (scene.children.length == 2) overlay = rand_4(true, scene, 1);
     }
 }
+
+// removes the overlay in the playing canvas
 function removeOverlay() {
     if (scene.children.length == 3) {
         scene.remove(scene.children[2])

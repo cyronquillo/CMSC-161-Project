@@ -12,13 +12,19 @@
 	<body>
 		<div class="East">
 			<p id = "timer" class="EastComponents"><label id="seconds">00</label>.<label id="milliseconds">00</label></p>
+			<!-- canvas for the sillhouette -->
 			<div id = "sillhouetteCanvas" class="gameCanvas EastComponents"> </div>
 		</div>
 		<div class="Center" id="rotateCanvas">
 		</div>
 		<div class="South">
+			<!-- button for checking whether the shape matches the sillhouette -->
 			<button onclick="checkAnswer()"> Check </button>
+
+			<!-- provides a hint of the sillhouette -->
 			<button onclick="showOverlay()"> Show Overlay </button>
+
+			<!-- removes the hint once pressed -->
 			<button onclick="removeOverlay()"> Remove Overlay </button>
 		</div>
 	</body>
